@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8
+    container_name: aircraft-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: aircraft_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  api:
+    build: .
+    container_name: aircraft-api
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: mysql+pymysql://root:root@db:3306/aircraft_db
+
+volumes:
+  mysql_data:
